@@ -1,6 +1,6 @@
-# Azure Container Apps with Terraform + Jenkins IaC Pipeline
+# Azure Container Apps with Terraform + Azure DevOps Enterprise Pipeline
 
-A comprehensive, production-ready Azure Container Apps platform built with Terraform Infrastructure as Code (IaC) and automated through Jenkins CI/CD pipelines. This project demonstrates best practices for deploying containerized applications on Azure with proper monitoring, alerting, and security.
+A comprehensive, production-ready Azure Container Apps platform built with Terraform Infrastructure as Code (IaC) and automated through Azure DevOps pipelines. This project demonstrates enterprise-grade best practices for deploying containerized applications on Azure with proper compliance, change management, monitoring, and security.
 
 ## Getting Started
 
@@ -14,8 +14,8 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                                Azure Subscription                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────────┐    ┌─────────────────────────┐                     │
-│  │     Dev Environment     │    │    Prod Environment     │                     │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────┐         │
+│  │ Dev Environment │  │Staging Environment│  │   Prod Environment      │         │
 │  │  ┌─────────────────────┐│    │ ┌─────────────────────┐ │                     │
 │  │  │   Resource Group    ││    │ │   Resource Group    │ │                     │
 │  │  │                     ││    │ │                     │ │                     │
@@ -61,22 +61,22 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              CI/CD Pipeline                                     │
+│                         Enterprise CI/CD Pipeline                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
-│  │   GitHub    │───▶│   Jenkins   │───▶│  Terraform  │───▶│   Azure     │      │
-│  │ Repository  │    │   Server    │    │   Apply     │    │ Container   │      │
+│  │   GitHub    │───▶│Azure DevOps │───▶│  Terraform  │───▶│   Azure     │      │
+│  │ Repository  │    │  Pipelines  │    │   Apply     │    │ Container   │      │
 │  │             │    │             │    │             │    │    Apps     │      │
 │  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘      │
 │                           │                                                     │
 │                           ▼                                                     │
 │                    ┌─────────────┐                                             │
-│                    │ Quality     │                                             │
-│                    │ Gates:      │                                             │
+│                    │Enterprise   │                                             │
+│                    │Quality Gates│                                             │
 │                    │ • TFLint    │                                             │
 │                    │ • Checkov   │                                             │
-│                    │ • Manual    │                                             │
-│                    │   Approval  │                                             │
+│                    │ • Compliance│                                             │
+│                    │ • Approvals │                                             │
 │                    └─────────────┘                                             │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -105,11 +105,13 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 - **Custom Dashboards**: Azure Dashboard with key metrics
 - **Health Checks**: Liveness and readiness probes
 
-### CI/CD Pipeline
+### Enterprise CI/CD Pipeline
 
 - **Infrastructure as Code**: Terraform with proper state management
+- **Multi-Environment**: Dev → Staging → Production workflow
 - **Quality Gates**: Format checking, linting, security scanning
-- **Manual Approval**: Production deployment approval process
+- **Compliance**: Manual approvals, change management, audit trails
+- **Security**: Least privilege access, secret management
 - **Automated Testing**: Post-deployment validation
 
 ## Project Structure
@@ -135,20 +137,31 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 │       │   ├── variables.tf
 │       │   ├── outputs.tf
 │       │   └── terraform.tfvars.example
+│       ├── staging/                # Staging environment
+│       │   ├── main.tf
+│       │   ├── variables.tf
+│       │   ├── outputs.tf
+│       │   └── terraform.tfvars.example
 │       └── prod/                   # Production environment
 │           ├── main.tf
 │           ├── variables.tf
 │           ├── outputs.tf
 │           └── terraform.tfvars.example
-├── ci/                             # CI/CD pipeline configuration
-│   └── Jenkinsfile                 # Jenkins pipeline definition
+├── .azure-pipelines/               # Azure DevOps pipeline configuration
+│   ├── infrastructure-pipeline.yml # Infrastructure deployment pipeline
+│   ├── application-pipeline.yml    # Application deployment pipeline
+│   ├── templates/                  # Reusable pipeline templates
+│   ├── variable-groups.yml         # Variable group configurations
+│   └── branch-policies.yml         # Branch protection policies
 ├── monitoring/                     # Monitoring and observability
 │   ├── azure-dashboard.json        # Azure Dashboard configuration
 │   └── kusto-queries.kql          # KQL queries for monitoring
-├── sample-app/                     # Sample Node.js application
+├── src/                            # Sample Node.js application (12-factor compliant)
 │   ├── server.js                   # Express.js API server
 │   ├── package.json               # Node.js dependencies
 │   └── Dockerfile                 # Container image definition
+├── docs/                           # Documentation
+│   └── AZURE_DEVOPS_SETUP.md      # Azure DevOps setup guide
 └── README.md                      # This file
 ```
 
@@ -158,22 +171,23 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 
 - **Azure CLI** (v2.50+)
 - **Terraform** (v1.0+)
-- **Jenkins** (v2.400+)
+- **Azure DevOps** organization
 - **Docker** (v20.10+)
 - **Node.js** (v18+) - for sample application
 
 ### Azure Resources
 
-- Azure Subscription with Contributor access
-- Azure Service Principal for Terraform
-- Storage Account for Terraform state (can be created by Terraform)
+- Azure Subscriptions (dev, staging, prod) with Contributor access
+- Azure Service Principals for each environment
+- Storage Account for Terraform state
+- Azure Container Registry
 
-### Jenkins Plugins
+### Azure DevOps Setup
 
-- Azure Credentials Plugin
-- Terraform Plugin
-- Pipeline Plugin
-- Email Extension Plugin
+- Service connections for each environment
+- Variable groups for configuration
+- Environment approvals and gates
+- Branch policies and protection rules
 
 ## Quick Start
 
@@ -194,29 +208,22 @@ az ad sp create-for-rbac --name "terraform-sp" --role="Contributor" --scopes="/s
 # - tenant (TENANT_ID)
 ```
 
-### 2. Jenkins Configuration
+### 2. Azure DevOps Configuration
 
-#### Configure Credentials in Jenkins:
+#### Create Service Connections:
 
-1. Go to **Manage Jenkins** → **Manage Credentials**
-2. Add the following credentials:
-   - `azure-client-id`: Azure Service Principal Client ID
-   - `azure-client-secret`: Azure Service Principal Client Secret
-   - `azure-tenant-id`: Azure Tenant ID
-   - `azure-subscription-id`: Azure Subscription ID
-   - `admin-email`: Email address for alerts
+1. Go to **Project Settings** → **Service connections**
+2. Create Azure Resource Manager connections:
+   - `azure-dev-connection`: Development subscription
+   - `azure-staging-connection`: Staging subscription  
+   - `azure-prod-connection`: Production subscription
+   - `acr-connection`: Container Registry connection
 
-#### Install Required Plugins:
+#### Setup Variable Groups:
 
-```bash
-# Install Jenkins plugins
-jenkins-plugin-cli --plugins \
-  azure-credentials \
-  terraform \
-  pipeline-stage-view \
-  email-ext \
-  build-timeout
-```
+1. Go to **Pipelines** → **Library**
+2. Create variable groups as defined in `variable-groups.yml`
+3. Link Azure Key Vault for sensitive values
 
 ### 3. Terraform Backend Initialization
 
@@ -261,24 +268,24 @@ cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your values
 ```
 
-### 5. Jenkins Pipeline Setup
+### 5. Azure DevOps Pipeline Setup
 
-1. Create a new **Pipeline** job in Jenkins
-2. Configure **Pipeline from SCM**:
-   - Repository URL: Your Git repository
-   - Script Path: `ci/Jenkinsfile`
-3. Configure build parameters:
-   - `ENVIRONMENT`: Choice parameter (dev, prod)
-   - `DESTROY`: Boolean parameter (default: false)
+1. Create **Infrastructure Pipeline**:
+   - Source: `/.azure-pipelines/infrastructure-pipeline.yml`
+   - Triggers: Changes to `/infra/**`
+2. Create **Application Pipeline**:
+   - Source: `/.azure-pipelines/application-pipeline.yml`  
+   - Triggers: Changes to `/src/**`
+3. Configure environment approvals and branch policies
 
 ### 6. Deploy Infrastructure
 
-#### Via Jenkins (Recommended):
+#### Via Azure DevOps (Recommended):
 
-1. Run the Jenkins pipeline
-2. Select environment (dev/prod)
-3. Review the Terraform plan
-4. Approve the deployment
+1. Push changes to develop branch (deploys to dev)
+2. Create PR to main branch (triggers staging)
+3. Approve staging deployment
+4. Approve production deployment
 
 #### Via Command Line:
 
@@ -334,7 +341,7 @@ Use the provided KQL queries in `monitoring/kusto-queries.kql` for:
 # Generate new secret
 az ad sp credential reset --id YOUR_CLIENT_ID
 
-# Update Jenkins credentials
+# Update Azure DevOps service connections
 # Update Key Vault secrets if stored there
 ```
 
@@ -468,12 +475,12 @@ terraform force-unlock LOCK_ID
 3. Check environment variables and secrets
 4. Review resource allocation
 
-#### Jenkins Pipeline Failures:
+#### Azure DevOps Pipeline Failures:
 
-1. Check Jenkins logs
-2. Verify Azure credentials
+1. Check pipeline logs in Azure DevOps
+2. Verify service connection permissions
 3. Confirm Terraform version compatibility
-4. Review network connectivity
+4. Review variable group configurations
 
 ### Support Contacts
 
@@ -485,7 +492,7 @@ terraform force-unlock LOCK_ID
 
 - [Azure Container Apps Documentation](https://docs.microsoft.com/en-us/azure/container-apps/)
 - [Terraform Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
-- [Jenkins Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/)
+- [Azure DevOps Pipelines Documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/)
 - [Azure Monitor KQL Reference](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/kql-quick-reference)
 
 ## Contributing

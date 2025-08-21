@@ -1,0 +1,8 @@
+# Staging Environment Configuration
+# Copy to terraform.tfvars and update with your values
+
+# Administrator email for alerts and notifications
+admin_email = "admin@yourcompany.com"
+
+# Container image (updated by CI/CD pipeline)
+container_image = "youracr.azurecr.io/sample-app:latest"

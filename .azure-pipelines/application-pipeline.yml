@@ -1,0 +1,113 @@
+# Application Pipeline - Single Responsibility: Build and deploy containerized applications
+# Follows 12-factor app principles with stateless containers
+
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+  paths:
+    include:
+    - src/**
+    - .azure-pipelines/application-pipeline.yml
+
+pr:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - src/**
+
+variables:
+- group: container-registry
+- name: dockerRegistryServiceConnection
+  value: 'acr-connection'
+- name: imageRepository
+  value: 'sample-app'
+- name: containerRegistry
+  value: '$(acrName).azurecr.io'
+- name: dockerfilePath
+  value: '$(Build.SourcesDirectory)/src/Dockerfile'
+- name: tag
+  value: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: 'Build Application'
+  jobs:
+  - job: BuildApp
+    displayName: 'Build and Push Container'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Docker@2
+      displayName: 'Build and push image'
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          latest
+
+- stage: DeployDev
+  displayName: 'Deploy to Development'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  jobs:
+  - deployment: DeployAppDev
+    displayName: 'Deploy Application - Dev'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: templates/container-app-deploy.yml
+            parameters:
+              environment: 'dev'
+              imageTag: $(tag)
+              serviceConnection: 'azure-dev-connection'
+
+- stage: DeployStaging
+  displayName: 'Deploy to Staging'
+  dependsOn: DeployDev
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployAppStaging
+    displayName: 'Deploy Application - Staging'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: templates/container-app-deploy.yml
+            parameters:
+              environment: 'staging'
+              imageTag: $(tag)
+              serviceConnection: 'azure-staging-connection'
+
+- stage: DeployProduction
+  displayName: 'Deploy to Production'
+  dependsOn: DeployStaging
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployAppProd
+    displayName: 'Deploy Application - Production'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: templates/container-app-deploy.yml
+            parameters:
+              environment: 'prod'
+              imageTag: $(tag)
+              serviceConnection: 'azure-prod-connection'

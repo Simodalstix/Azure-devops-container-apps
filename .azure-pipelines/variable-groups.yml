@@ -1,0 +1,33 @@
+# Variable Groups Configuration - Separation of Concerns for Environment-Specific Config
+# Create these variable groups in Azure DevOps Library
+
+# Terraform Backend Configuration (Shared across all environments)
+terraform-backend:
+  tfStateResourceGroup: "rg-terraform-state"
+  tfStateStorageAccount: "sttfstatedevops001"
+  tfStateContainer: "tfstate"
+
+# Container Registry Configuration (Shared)
+container-registry:
+  acrName: "acrcontainerappdevops001"
+
+# Development Environment Variables
+dev-environment:
+  adminEmail: "dev-admin@yourcompany.com"
+  logRetentionDays: "7"
+  
+# Staging Environment Variables  
+staging-environment:
+  adminEmail: "staging-admin@yourcompany.com"
+  logRetentionDays: "30"
+
+# Production Environment Variables
+prod-environment:
+  adminEmail: "prod-admin@yourcompany.com"
+  logRetentionDays: "90"
+
+# Service Connections Required:
+# - azure-dev-connection (Development subscription)
+# - azure-staging-connection (Staging subscription) 
+# - azure-prod-connection (Production subscription)
+# - acr-connection (Container Registry service connection)

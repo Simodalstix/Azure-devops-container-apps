@@ -3,6 +3,8 @@ const helmet = require("helmet");
 const cors = require("cors");
 const morgan = require("morgan");
 const appInsights = require("applicationinsights");
+
+// 12-Factor App: Config via environment variables
 require("dotenv").config();
 
 // Initialize Application Insights
@@ -22,8 +24,12 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
 }
 
 const app = express();
+
+// 12-Factor App: Port binding and environment configuration
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || "development";
+const APP_VERSION = process.env.APP_VERSION || "1.0.0";
+const LOG_LEVEL = process.env.LOG_LEVEL || "info";
 
 // Middleware
 app.use(helmet());
@@ -45,7 +51,7 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: NODE_ENV,
-    version: process.env.npm_package_version || "1.0.0",
+    version: APP_VERSION,
     memory: process.memoryUsage(),
     pid: process.pid,
   };
@@ -71,7 +77,7 @@ app.get("/ready", (req, res) => {
 app.get("/", (req, res) => {
   res.json({
     message: "Azure Container Apps API",
-    version: process.env.npm_package_version || "1.0.0",
+    version: APP_VERSION,
     environment: NODE_ENV,
     timestamp: new Date().toISOString(),
   });
@@ -80,7 +86,7 @@ app.get("/", (req, res) => {
 app.get("/api/info", (req, res) => {
   const info = {
     application: "Azure Container Apps API",
-    version: process.env.npm_package_version || "1.0.0",
+    version: APP_VERSION,
     environment: NODE_ENV,
     node_version: process.version,
     platform: process.platform,

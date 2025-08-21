@@ -1,0 +1,23 @@
+# Terraform Setup Template - Single Responsibility: Install and configure Terraform
+parameters:
+- name: terraformVersion
+  type: string
+  default: '1.6.6'
+
+steps:
+- task: TerraformInstaller@1
+  displayName: 'Install Terraform'
+  inputs:
+    terraformVersion: ${{ parameters.terraformVersion }}
+
+- task: AzureCLI@2
+  displayName: 'Azure CLI Login Check'
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "Azure CLI Version:"
+      az --version
+      echo "Current Subscription:"
+      az account show --output table

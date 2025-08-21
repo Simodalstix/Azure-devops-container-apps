@@ -1,0 +1,52 @@
+# Branch Protection Policies - Enterprise Compliance and Change Management
+# Configure these policies in Azure DevOps Branch Policies
+
+main_branch_policies:
+  # Require pull request reviews
+  pull_request_reviews:
+    required_reviewers: 2
+    dismiss_stale_reviews: true
+    require_code_owner_reviews: true
+    
+  # Build validation
+  build_validation:
+    - pipeline: "infrastructure-pipeline"
+      path_filter: "infra/**"
+    - pipeline: "application-pipeline" 
+      path_filter: "src/**"
+      
+  # Status checks
+  status_checks:
+    - "Security Scan"
+    - "Terraform Validate"
+    - "Code Quality"
+    
+  # Merge requirements
+  merge_requirements:
+    squash_merge: true
+    delete_branch_on_merge: true
+    
+develop_branch_policies:
+  # Lighter requirements for development
+  pull_request_reviews:
+    required_reviewers: 1
+    
+  # Build validation
+  build_validation:
+    - pipeline: "infrastructure-pipeline"
+      path_filter: "infra/**"
+
+# Environment Protection Rules
+environment_approvals:
+  staging:
+    required_approvers:
+      - "DevOps Team"
+    timeout_minutes: 60
+    
+  production:
+    required_approvers:
+      - "DevOps Team"
+      - "Security Team"
+      - "Product Owner"
+    timeout_minutes: 1440  # 24 hours
+    business_hours_only: true

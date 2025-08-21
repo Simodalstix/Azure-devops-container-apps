@@ -1,0 +1,28 @@
+# Terraform Validation Template - Single Responsibility: Validate Terraform code
+steps:
+- task: TerraformTaskV4@4
+  displayName: 'Terraform Format Check'
+  inputs:
+    provider: 'azurerm'
+    command: 'fmt'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/infra'
+    commandOptions: '-check -recursive'
+
+- task: Bash@3
+  displayName: 'Security Scan with Checkov'
+  inputs:
+    targetType: 'inline'
+    script: |
+      pip install checkov
+      checkov -d infra/ --framework terraform --output cli --quiet
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+- task: Bash@3
+  displayName: 'Lint with TFLint'
+  inputs:
+    targetType: 'inline'
+    script: |
+      curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+      cd infra/envs/dev && tflint --init
+      cd ../../../infra/envs/dev && tflint
+    workingDirectory: '$(System.DefaultWorkingDirectory)'

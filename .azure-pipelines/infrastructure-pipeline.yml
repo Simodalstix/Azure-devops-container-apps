@@ -1,0 +1,94 @@
+# Infrastructure Pipeline - Single Responsibility: Deploy Azure Infrastructure
+# Follows immutable infrastructure principles with declarative Terraform
+
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+  paths:
+    include:
+    - infra/**
+    - .azure-pipelines/infrastructure-pipeline.yml
+
+pr:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - infra/**
+
+variables:
+- group: terraform-backend
+- name: terraformVersion
+  value: '1.6.6'
+
+stages:
+- stage: Validate
+  displayName: 'Validate & Plan'
+  jobs:
+  - job: TerraformValidate
+    displayName: 'Terraform Validation'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: templates/terraform-setup.yml
+    - template: templates/terraform-validate.yml
+
+- stage: DeployDev
+  displayName: 'Deploy to Development'
+  dependsOn: Validate
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  jobs:
+  - deployment: DeployInfraDev
+    displayName: 'Deploy Infrastructure - Dev'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: templates/terraform-deploy.yml
+            parameters:
+              environment: 'dev'
+              serviceConnection: 'azure-dev-connection'
+
+- stage: DeployStaging
+  displayName: 'Deploy to Staging'
+  dependsOn: DeployDev
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployInfraStaging
+    displayName: 'Deploy Infrastructure - Staging'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: templates/terraform-deploy.yml
+            parameters:
+              environment: 'staging'
+              serviceConnection: 'azure-staging-connection'
+
+- stage: DeployProduction
+  displayName: 'Deploy to Production'
+  dependsOn: DeployStaging
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployInfraProd
+    displayName: 'Deploy Infrastructure - Production'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: templates/terraform-deploy.yml
+            parameters:
+              environment: 'prod'
+              serviceConnection: 'azure-prod-connection'
