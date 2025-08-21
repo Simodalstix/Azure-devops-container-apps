@@ -1,0 +1,87 @@
+# Shared Infrastructure Pipeline - Deploy shared resources first
+# Must be deployed before environment-specific pipelines
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - infra/shared-infrastructure/**
+    - .azure-pipelines/shared-infrastructure-pipeline.yml
+
+pr: none  # No PR builds for shared infrastructure
+
+variables:
+- group: terraform-backend
+- name: terraformVersion
+  value: '1.6.6'
+
+stages:
+- stage: ValidateShared
+  displayName: 'Validate Shared Infrastructure'
+  jobs:
+  - job: TerraformValidate
+    displayName: 'Terraform Validation'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: templates/terraform-setup.yml
+    - task: TerraformTaskV4@4
+      displayName: 'Terraform Format Check'
+      inputs:
+        provider: 'azurerm'
+        command: 'fmt'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/shared-infrastructure'
+        commandOptions: '-check'
+
+- stage: DeployShared
+  displayName: 'Deploy Shared Infrastructure'
+  dependsOn: ValidateShared
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeploySharedInfra
+    displayName: 'Deploy Shared Infrastructure'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'shared'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          
+          - task: TerraformInstaller@1
+            displayName: 'Install Terraform'
+            inputs:
+              terraformVersion: $(terraformVersion)
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/infra/shared-infrastructure'
+              backendServiceArm: 'azure-prod-connection'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: 'shared.terraform.tfstate'
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Plan'
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/infra/shared-infrastructure'
+              environmentServiceNameAzureRM: 'azure-prod-connection'
+              commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Apply'
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/infra/shared-infrastructure'
+              environmentServiceNameAzureRM: 'azure-prod-connection'
+              commandOptions: 'tfplan'

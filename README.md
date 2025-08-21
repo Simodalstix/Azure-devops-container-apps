@@ -10,76 +10,12 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                Azure Subscription                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────┐         │
-│  │ Dev Environment │  │Staging Environment│  │   Prod Environment      │         │
-│  │  ┌─────────────────────┐│    │ ┌─────────────────────┐ │                     │
-│  │  │   Resource Group    ││    │ │   Resource Group    │ │                     │
-│  │  │                     ││    │ │                     │ │                     │
-│  │  │ ┌─────────────────┐ ││    │ │ ┌─────────────────┐ │ │                     │
-│  │  │ │ Container Apps  │ ││    │ │ │ Container Apps  │ │ │                     │
-│  │  │ │   Environment   │ ││    │ │ │   Environment   │ │ │                     │
-│  │  │ │                 │ ││    │ │ │                 │ │ │                     │
-│  │  │ │ ┌─────────────┐ │ ││    │ │ │ ┌─────────────┐ │ │ │                     │
-│  │  │ │ │ API Service │ │ ││    │ │ │ │ API Service │ │ │ │                     │
-│  │  │ │ │   (1-3x)    │ │ ││    │ │ │ │   (2-10x)   │ │ │ │                     │
-│  │  │ │ └─────────────┘ │ ││    │ │ │ └─────────────┘ │ │ │                     │
-│  │  │ └─────────────────┘ ││    │ │ └─────────────────┘ │ │                     │
-│  │  │                     ││    │ │                     │ │                     │
-│  │  │ ┌─────────────────┐ ││    │ │ ┌─────────────────┐ │ │                     │
-│  │  │ │ Container       │ ││    │ │ │ Container       │ │ │                     │
-│  │  │ │ Registry (ACR)  │ ││    │ │ │ Registry (ACR)  │ │ │                     │
-│  │  │ └─────────────────┘ ││    │ │ └─────────────────┘ │ │                     │
-│  │  │                     ││    │ │                     │ │                     │
-│  │  │ ┌─────────────────┐ ││    │ │ ┌─────────────────┐ │ │                     │
-│  │  │ │ Key Vault       │ ││    │ │ │ Key Vault       │ │ │                     │
-│  │  │ └─────────────────┘ ││    │ │ └─────────────────┘ │ │                     │
-│  │  │                     ││    │ │                     │ │                     │
-│  │  │ ┌─────────────────┐ ││    │ │ ┌─────────────────┐ │ │                     │
-│  │  │ │ Log Analytics   │ ││    │ │ │ Log Analytics   │ │ │                     │
-│  │  │ │ Workspace       │ ││    │ │ │ Workspace       │ │ │                     │
-│  │  │ └─────────────────┘ ││    │ │ └─────────────────┘ │ │                     │
-│  │  │                     ││    │ │                     │ │                     │
-│  │  │ ┌─────────────────┐ ││    │ │ ┌─────────────────┐ │ │                     │
-│  │  │ │ Application     │ ││    │ │ │ Application     │ │ │                     │
-│  │  │ │ Insights        │ ││    │ │ │ Insights        │ │ │                     │
-│  │  │ └─────────────────┘ ││    │ │ └─────────────────┘ │ │                     │
-│  │  └─────────────────────┘│    │ └─────────────────────┘ │                     │
-│  └─────────────────────────┘    └─────────────────────────┘                     │
-│                                                                                 │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │                        Shared Resources                                 │   │
-│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────┐ │   │
-│  │  │ Storage Account │  │ Action Groups   │  │ Azure Dashboard         │ │   │
-│  │  │ (Terraform      │  │ (Alerts)        │  │ (Monitoring)            │ │   │
-│  │  │  State)         │  │                 │  │                         │ │   │
-│  │  └─────────────────┘  └─────────────────┘  └─────────────────────────┘ │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────┘
+This project implements an enterprise-grade Azure Container Apps platform with comprehensive DevOps pipelines, change management controls, and shared resource architecture. The solution demonstrates production-ready practices including multi-environment deployment (dev/staging/prod), automated quality gates, manual approvals, and complete audit trails.
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         Enterprise CI/CD Pipeline                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
-│  │   GitHub    │───▶│Azure DevOps │───▶│  Terraform  │───▶│   Azure     │      │
-│  │ Repository  │    │  Pipelines  │    │   Apply     │    │ Container   │      │
-│  │             │    │             │    │             │    │    Apps     │      │
-│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘      │
-│                           │                                                     │
-│                           ▼                                                     │
-│                    ┌─────────────┐                                             │
-│                    │Enterprise   │                                             │
-│                    │Quality Gates│                                             │
-│                    │ • TFLint    │                                             │
-│                    │ • Checkov   │                                             │
-│                    │ • Compliance│                                             │
-│                    │ • Approvals │                                             │
-│                    └─────────────┘                                             │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**Key Components:**
+- **Shared Resources**: Container Registry, Log Analytics, Application Insights for cost efficiency
+- **Environment-Specific**: Key Vault, Container Apps Environment, Resource Groups for isolation
+- **Enterprise Pipeline**: GitHub → Azure DevOps → Terraform → Azure with quality gates and approvals
 
 ## Features
 

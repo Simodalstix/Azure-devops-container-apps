@@ -40,15 +40,10 @@ resource "azurerm_storage_container" "tfstate" {
   container_access_type = "private"
 }
 
-# Azure Container Registry
-resource "azurerm_container_registry" "main" {
-  name                = var.acr_name
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  sku                 = "Basic"
-  admin_enabled       = true
-
-  tags = var.tags
+# Reference to shared Container Registry
+data "azurerm_container_registry" "shared" {
+  name                = var.shared_acr_name
+  resource_group_name = var.shared_resource_group_name
 }
 
 # Key Vault
@@ -79,26 +74,16 @@ resource "azurerm_key_vault" "main" {
   tags = var.tags
 }
 
-# Log Analytics Workspace
-resource "azurerm_log_analytics_workspace" "main" {
-  name                = var.log_analytics_workspace_name
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
-
-  tags = var.tags
+# Reference to shared Log Analytics Workspace
+data "azurerm_log_analytics_workspace" "shared" {
+  name                = var.shared_log_analytics_name
+  resource_group_name = var.shared_resource_group_name
 }
 
-# Application Insights
-resource "azurerm_application_insights" "main" {
-  name                = var.application_insights_name
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  workspace_id        = azurerm_log_analytics_workspace.main.id
-  application_type    = "web"
-
-  tags = var.tags
+# Reference to shared Application Insights
+data "azurerm_application_insights" "shared" {
+  name                = var.shared_application_insights_name
+  resource_group_name = var.shared_resource_group_name
 }
 
 # Container Apps Environment
@@ -106,36 +91,16 @@ resource "azurerm_container_app_environment" "main" {
   name                       = var.container_app_environment_name
   location                   = azurerm_resource_group.main.location
   resource_group_name        = azurerm_resource_group.main.name
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.shared.id
 
   tags = var.tags
-}
-
-# Diagnostic Settings for Container Registry
-resource "azurerm_monitor_diagnostic_setting" "acr" {
-  name                       = "acr-diagnostics"
-  target_resource_id         = azurerm_container_registry.main.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
-
-  enabled_log {
-    category = "ContainerRegistryRepositoryEvents"
-  }
-
-  enabled_log {
-    category = "ContainerRegistryLoginEvents"
-  }
-
-  metric {
-    category = "AllMetrics"
-    enabled  = true
-  }
 }
 
 # Diagnostic Settings for Container Apps Environment
 resource "azurerm_monitor_diagnostic_setting" "container_app_env" {
   name                       = "container-app-env-diagnostics"
   target_resource_id         = azurerm_container_app_environment.main.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.shared.id
 
   enabled_log {
     category = "ContainerAppConsoleLogs"

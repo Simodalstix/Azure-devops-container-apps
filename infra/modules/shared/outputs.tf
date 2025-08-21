@@ -27,24 +27,24 @@ output "storage_account_primary_key" {
 }
 
 output "container_registry_name" {
-  description = "Name of the Azure Container Registry"
-  value       = azurerm_container_registry.main.name
+  description = "Name of the shared Azure Container Registry"
+  value       = data.azurerm_container_registry.shared.name
 }
 
 output "container_registry_login_server" {
-  description = "Login server URL for the Azure Container Registry"
-  value       = azurerm_container_registry.main.login_server
+  description = "Login server URL for the shared Azure Container Registry"
+  value       = data.azurerm_container_registry.shared.login_server
 }
 
 output "container_registry_admin_username" {
-  description = "Admin username for the Azure Container Registry"
-  value       = azurerm_container_registry.main.admin_username
+  description = "Admin username for the shared Azure Container Registry"
+  value       = data.azurerm_container_registry.shared.admin_username
   sensitive   = true
 }
 
 output "container_registry_admin_password" {
-  description = "Admin password for the Azure Container Registry"
-  value       = azurerm_container_registry.main.admin_password
+  description = "Admin password for the shared Azure Container Registry"
+  value       = data.azurerm_container_registry.shared.admin_password
   sensitive   = true
 }
 
@@ -59,29 +59,34 @@ output "key_vault_uri" {
 }
 
 output "log_analytics_workspace_id" {
-  description = "ID of the Log Analytics Workspace"
-  value       = azurerm_log_analytics_workspace.main.id
+  description = "ID of the shared Log Analytics Workspace"
+  value       = data.azurerm_log_analytics_workspace.shared.id
 }
 
 output "log_analytics_workspace_name" {
-  description = "Name of the Log Analytics Workspace"
-  value       = azurerm_log_analytics_workspace.main.name
+  description = "Name of the shared Log Analytics Workspace"
+  value       = data.azurerm_log_analytics_workspace.shared.name
+}
+
+output "application_insights_id" {
+  description = "ID of the shared Application Insights"
+  value       = data.azurerm_application_insights.shared.id
 }
 
 output "application_insights_name" {
-  description = "Name of the Application Insights instance"
-  value       = azurerm_application_insights.main.name
+  description = "Name of the shared Application Insights instance"
+  value       = data.azurerm_application_insights.shared.name
 }
 
 output "application_insights_instrumentation_key" {
-  description = "Instrumentation key for Application Insights"
-  value       = azurerm_application_insights.main.instrumentation_key
+  description = "Instrumentation key for shared Application Insights"
+  value       = data.azurerm_application_insights.shared.instrumentation_key
   sensitive   = true
 }
 
 output "application_insights_connection_string" {
-  description = "Connection string for Application Insights"
-  value       = azurerm_application_insights.main.connection_string
+  description = "Connection string for shared Application Insights"
+  value       = data.azurerm_application_insights.shared.connection_string
   sensitive   = true
 }
 

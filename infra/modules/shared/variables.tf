@@ -16,23 +16,28 @@ variable "tfstate_storage_account_name" {
   type        = string
 }
 
-variable "acr_name" {
-  description = "Name of the Azure Container Registry"
+variable "shared_resource_group_name" {
+  description = "Name of the shared resource group containing ACR, Log Analytics, etc."
+  type        = string
+}
+
+variable "shared_acr_name" {
+  description = "Name of the shared Azure Container Registry"
+  type        = string
+}
+
+variable "shared_log_analytics_name" {
+  description = "Name of the shared Log Analytics Workspace"
+  type        = string
+}
+
+variable "shared_application_insights_name" {
+  description = "Name of the shared Application Insights instance"
   type        = string
 }
 
 variable "key_vault_name" {
-  description = "Name of the Azure Key Vault"
-  type        = string
-}
-
-variable "log_analytics_workspace_name" {
-  description = "Name of the Log Analytics Workspace"
-  type        = string
-}
-
-variable "application_insights_name" {
-  description = "Name of the Application Insights instance"
+  description = "Name of the environment-specific Azure Key Vault"
   type        = string
 }
 
