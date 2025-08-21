@@ -2,7 +2,13 @@
 
 A comprehensive, production-ready Azure Container Apps platform built with Terraform Infrastructure as Code (IaC) and automated through Jenkins CI/CD pipelines. This project demonstrates best practices for deploying containerized applications on Azure with proper monitoring, alerting, and security.
 
-## 🏗️ Architecture Overview
+## Getting Started
+
+**New to this project?** Start with the [Quick Start Guide](QUICK_START.md) to get running in 15 minutes.
+
+**Need detailed information?** Continue reading this comprehensive documentation.
+
+## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -75,7 +81,7 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🚀 Features
+## Features
 
 ### Infrastructure
 
@@ -106,7 +112,7 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 - **Manual Approval**: Production deployment approval process
 - **Automated Testing**: Post-deployment validation
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── infra/                          # Terraform infrastructure code
@@ -146,7 +152,7 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 └── README.md                      # This file
 ```
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 ### Required Tools
 
@@ -169,7 +175,7 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 - Pipeline Plugin
 - Email Extension Plugin
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Azure Service Principal Setup
 
@@ -290,7 +296,7 @@ terraform plan -out=tfplan
 terraform apply tfplan
 ```
 
-## 📊 Monitoring and Observability
+## Monitoring and Observability
 
 ### Azure Dashboard
 
@@ -318,7 +324,7 @@ Use the provided KQL queries in `monitoring/kusto-queries.kql` for:
 - Capacity planning
 - Security monitoring
 
-## 🔧 Operational Runbooks
+## Operational Runbooks
 
 ### Secret Rotation
 
@@ -390,7 +396,7 @@ az storage blob upload \
 3. Verify health check configuration
 4. Investigate application crashes
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
 ### Infrastructure Security
 
@@ -413,7 +419,7 @@ az storage blob upload \
 - Regular access reviews
 - Incident response procedures
 
-## 🧪 Testing
+## Testing
 
 ### Infrastructure Testing
 
@@ -444,7 +450,7 @@ docker build -t test-app .
 docker run -p 3000:3000 test-app
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -475,14 +481,14 @@ terraform force-unlock LOCK_ID
 - **Application Issues**: Development Team
 - **Security Issues**: Security Team
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Azure Container Apps Documentation](https://docs.microsoft.com/en-us/azure/container-apps/)
 - [Terraform Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
 - [Jenkins Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/)
 - [Azure Monitor KQL Reference](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/kql-quick-reference)
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -490,10 +496,10 @@ terraform force-unlock LOCK_ID
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-**Built with ❤️ for Azure Container Apps**
+**Built for Azure Container Apps**
