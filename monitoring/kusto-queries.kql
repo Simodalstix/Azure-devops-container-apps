@@ -1,0 +1,252 @@
+// Kusto (KQL) queries for Azure Container Apps monitoring and alerting
+// These queries can be used in Azure Monitor, Log Analytics, and Application Insights
+
+// =============================================================================
+// PERFORMANCE MONITORING QUERIES
+// =============================================================================
+
+// 1. Request Rate Over Time
+// Shows the number of requests per 5-minute interval
+requests
+| where timestamp > ago(1h)
+| summarize RequestCount = count() by bin(timestamp, 5m)
+| render timechart 
+    with (title="Request Rate", xtitle="Time", ytitle="Requests per 5 minutes")
+
+// 2. HTTP 5xx Error Rate
+// Tracks server errors over time
+requests
+| where timestamp > ago(1h)
+| where resultCode startswith "5"
+| summarize ErrorCount = count() by bin(timestamp, 5m)
+| render timechart 
+    with (title="HTTP 5xx Errors", xtitle="Time", ytitle="Errors per 5 minutes")
+
+// 3. Response Time Percentiles
+// Shows P50, P95, and P99 response times
+requests
+| where timestamp > ago(1h)
+| summarize 
+    P50 = percentile(duration, 50),
+    P95 = percentile(duration, 95),
+    P99 = percentile(duration, 99)
+    by bin(timestamp, 5m)
+| render timechart 
+    with (title="Response Time Percentiles", xtitle="Time", ytitle="Duration (ms)")
+
+// 4. Top Slowest Requests
+// Identifies the slowest requests in the last hour
+requests
+| where timestamp > ago(1h)
+| top 20 by duration desc
+| project timestamp, name, url, duration, resultCode, clientIP
+
+// 5. Error Rate by Operation
+// Shows error rates grouped by operation/endpoint
+requests
+| where timestamp > ago(24h)
+| summarize 
+    TotalRequests = count(),
+    ErrorRequests = countif(success == false),
+    ErrorRate = round(100.0 * countif(success == false) / count(), 2)
+    by operation_Name
+| where TotalRequests > 10  // Filter out low-traffic operations
+| order by ErrorRate desc
+
+// =============================================================================
+// CONTAINER APPS SPECIFIC QUERIES
+// =============================================================================
+
+// 6. Container App Console Logs with Errors
+// Shows application errors from container logs
+ContainerAppConsoleLogs_CL
+| where TimeGenerated > ago(1h)
+| where Log_s contains "ERROR" or Log_s contains "Exception" or Log_s contains "FATAL"
+| project TimeGenerated, ContainerAppName_s, ContainerName_s, Log_s
+| order by TimeGenerated desc
+
+// 7. Container Restart Events
+// Tracks container restart events
+ContainerAppSystemLogs_CL
+| where TimeGenerated > ago(24h)
+| where Log_s contains "restart" or Log_s contains "killed" or Log_s contains "terminated"
+| summarize RestartCount = count() by bin(TimeGenerated, 1h), ContainerAppName_s
+| render timechart 
+    with (title="Container Restarts", xtitle="Time", ytitle="Restart Count")
+
+// 8. Replica Scaling Events
+// Shows when replicas are scaled up or down
+ContainerAppSystemLogs_CL
+| where TimeGenerated > ago(24h)
+| where Log_s contains "replica" and (Log_s contains "created" or Log_s contains "deleted")
+| project TimeGenerated, ContainerAppName_s, Log_s
+| order by TimeGenerated desc
+
+// 9. Resource Usage Trends
+// Shows CPU and memory usage over time (if available)
+performanceCounters
+| where timestamp > ago(1h)
+| where category in ("Processor", "Memory")
+| summarize AvgValue = avg(value) by bin(timestamp, 5m), category, counter
+| render timechart 
+    with (title="Resource Usage", xtitle="Time", ytitle="Usage %")
+
+// =============================================================================
+// ALERTING QUERIES
+// =============================================================================
+
+// 10. High Error Rate Alert Query
+// Alert when error rate exceeds 5% in a 5-minute window
+requests
+| where timestamp > ago(5m)
+| summarize 
+    TotalRequests = count(),
+    ErrorRequests = countif(success == false)
+| extend ErrorRate = round(100.0 * ErrorRequests / TotalRequests, 2)
+| where ErrorRate > 5 and TotalRequests > 10
+
+// 11. High Response Time Alert Query
+// Alert when P95 response time exceeds 2 seconds
+requests
+| where timestamp > ago(5m)
+| summarize P95Duration = percentile(duration, 95)
+| where P95Duration > 2000  // 2 seconds in milliseconds
+
+// 12. Container Restart Spike Alert Query
+// Alert when container restarts exceed threshold
+ContainerAppSystemLogs_CL
+| where TimeGenerated > ago(5m)
+| where Log_s contains "restart"
+| summarize RestartCount = count()
+| where RestartCount > 3
+
+// 13. Application Error Spike Alert Query
+// Alert when application errors exceed threshold
+ContainerAppConsoleLogs_CL
+| where TimeGenerated > ago(5m)
+| where Log_s contains "ERROR" or Log_s contains "Exception"
+| summarize ErrorCount = count()
+| where ErrorCount > 10
+
+// =============================================================================
+// BUSINESS INTELLIGENCE QUERIES
+// =============================================================================
+
+// 14. Daily Request Summary
+// Provides daily statistics for requests
+requests
+| where timestamp > ago(7d)
+| summarize 
+    TotalRequests = count(),
+    UniqueUsers = dcount(user_Id),
+    AvgDuration = avg(duration),
+    ErrorRate = round(100.0 * countif(success == false) / count(), 2)
+    by bin(timestamp, 1d)
+| order by timestamp desc
+
+// 15. Top User Agents
+// Shows the most common user agents
+requests
+| where timestamp > ago(24h)
+| summarize RequestCount = count() by client_Browser
+| top 10 by RequestCount desc
+
+// 16. Geographic Distribution
+// Shows requests by country/region
+requests
+| where timestamp > ago(24h)
+| summarize RequestCount = count() by client_CountryOrRegion
+| top 10 by RequestCount desc
+
+// 17. API Endpoint Usage
+// Shows usage statistics for different API endpoints
+requests
+| where timestamp > ago(24h)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(duration),
+    ErrorRate = round(100.0 * countif(success == false) / count(), 2)
+    by url
+| where RequestCount > 5
+| order by RequestCount desc
+
+// =============================================================================
+// HEALTH CHECK QUERIES
+// =============================================================================
+
+// 18. Health Endpoint Availability
+// Monitors the health endpoint availability
+requests
+| where timestamp > ago(1h)
+| where url contains "/health"
+| summarize 
+    TotalChecks = count(),
+    SuccessfulChecks = countif(success == true),
+    AvailabilityRate = round(100.0 * countif(success == true) / count(), 2)
+    by bin(timestamp, 5m)
+| render timechart 
+    with (title="Health Endpoint Availability", xtitle="Time", ytitle="Availability %")
+
+// 19. Dependency Health Check
+// Monitors external dependency health (if implemented)
+dependencies
+| where timestamp > ago(1h)
+| summarize 
+    TotalCalls = count(),
+    SuccessfulCalls = countif(success == true),
+    AvgDuration = avg(duration),
+    SuccessRate = round(100.0 * countif(success == true) / count(), 2)
+    by target, bin(timestamp, 5m)
+| render timechart 
+    with (title="Dependency Health", xtitle="Time", ytitle="Success Rate %")
+
+// =============================================================================
+// TROUBLESHOOTING QUERIES
+// =============================================================================
+
+// 20. Recent Exceptions
+// Shows recent exceptions with stack traces
+exceptions
+| where timestamp > ago(1h)
+| project timestamp, type, message, details, operation_Name
+| order by timestamp desc
+
+// 21. Failed Requests Details
+// Detailed view of failed requests for troubleshooting
+requests
+| where timestamp > ago(1h)
+| where success == false
+| project timestamp, name, url, resultCode, duration, customDimensions
+| order by timestamp desc
+
+// 22. Trace Logs for Specific Operation
+// Detailed trace logs for a specific operation (replace 'OperationName' with actual operation)
+traces
+| where timestamp > ago(1h)
+| where operation_Name == "OperationName"  // Replace with actual operation name
+| project timestamp, message, severityLevel, customDimensions
+| order by timestamp desc
+
+// =============================================================================
+// CAPACITY PLANNING QUERIES
+// =============================================================================
+
+// 23. Peak Usage Analysis
+// Identifies peak usage patterns
+requests
+| where timestamp > ago(7d)
+| summarize RequestCount = count() by bin(timestamp, 1h)
+| summarize 
+    PeakHour = arg_max(RequestCount, timestamp),
+    AvgRequestsPerHour = avg(RequestCount),
+    MaxRequestsPerHour = max(RequestCount)
+
+// 24. Growth Trend Analysis
+// Shows request growth over time
+requests
+| where timestamp > ago(30d)
+| summarize DailyRequests = count() by bin(timestamp, 1d)
+| serialize
+| extend GrowthRate = round(100.0 * (DailyRequests - prev(DailyRequests)) / prev(DailyRequests), 2)
+| project timestamp, DailyRequests, GrowthRate
+| order by timestamp desc

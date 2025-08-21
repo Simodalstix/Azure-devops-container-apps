@@ -1,0 +1,550 @@
+{
+  "lenses": {
+    "0": {
+      "order": 0,
+      "parts": {
+        "0": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "colSpan": 6,
+            "rowSpan": 4
+          },
+          "metadata": {
+            "inputs": [
+              {
+                "name": "resourceTypeMode",
+                "isOptional": true
+              },
+              {
+                "name": "ComponentId",
+                "isOptional": true
+              },
+              {
+                "name": "Scope",
+                "value": {
+                  "resourceIds": [
+                    "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/containerApps/{container-app-name}"
+                  ]
+                },
+                "isOptional": true
+              },
+              {
+                "name": "PartId",
+                "value": "1d7a8c4e-7b9f-4c3a-8e2d-9f1a2b3c4d5e",
+                "isOptional": true
+              },
+              {
+                "name": "Version",
+                "value": "2.0",
+                "isOptional": true
+              },
+              {
+                "name": "TimeRange",
+                "value": "P1D",
+                "isOptional": true
+              },
+              {
+                "name": "DashboardId",
+                "isOptional": true
+              },
+              {
+                "name": "DraftRequestParameters",
+                "isOptional": true
+              },
+              {
+                "name": "Query",
+                "value": "requests\n| where timestamp > ago(1h)\n| summarize RequestCount = count() by bin(timestamp, 5m)\n| render timechart",
+                "isOptional": true
+              },
+              {
+                "name": "ControlType",
+                "value": "FrameControlChart",
+                "isOptional": true
+              },
+              {
+                "name": "SpecificChart",
+                "value": "Line",
+                "isOptional": true
+              },
+              {
+                "name": "PartTitle",
+                "value": "Request Rate",
+                "isOptional": true
+              },
+              {
+                "name": "PartSubTitle",
+                "value": "Requests per 5 minutes",
+                "isOptional": true
+              },
+              {
+                "name": "Dimensions",
+                "value": {
+                  "xAxis": {
+                    "name": "timestamp",
+                    "type": "datetime"
+                  },
+                  "yAxis": [
+                    {
+                      "name": "RequestCount",
+                      "type": "long"
+                    }
+                  ],
+                  "splitBy": [],
+                  "aggregation": {
+                    "primaryAggregationType": "Sum"
+                  }
+                },
+                "isOptional": true
+              },
+              {
+                "name": "LegendOptions",
+                "value": {
+                  "isEnabled": true,
+                  "position": "Bottom"
+                },
+                "isOptional": true
+              }
+            ],
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "settings": {}
+          }
+        },
+        "1": {
+          "position": {
+            "x": 6,
+            "y": 0,
+            "colSpan": 6,
+            "rowSpan": 4
+          },
+          "metadata": {
+            "inputs": [
+              {
+                "name": "resourceTypeMode",
+                "isOptional": true
+              },
+              {
+                "name": "ComponentId",
+                "isOptional": true
+              },
+              {
+                "name": "Scope",
+                "value": {
+                  "resourceIds": [
+                    "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/containerApps/{container-app-name}"
+                  ]
+                },
+                "isOptional": true
+              },
+              {
+                "name": "PartId",
+                "value": "2e8b9c5f-8c0g-5d4b-9f3e-0g2b3c4d5e6f",
+                "isOptional": true
+              },
+              {
+                "name": "Version",
+                "value": "2.0",
+                "isOptional": true
+              },
+              {
+                "name": "TimeRange",
+                "value": "P1D",
+                "isOptional": true
+              },
+              {
+                "name": "DashboardId",
+                "isOptional": true
+              },
+              {
+                "name": "DraftRequestParameters",
+                "isOptional": true
+              },
+              {
+                "name": "Query",
+                "value": "requests\n| where timestamp > ago(1h)\n| where resultCode startswith \"5\"\n| summarize ErrorCount = count() by bin(timestamp, 5m)\n| render timechart",
+                "isOptional": true
+              },
+              {
+                "name": "ControlType",
+                "value": "FrameControlChart",
+                "isOptional": true
+              },
+              {
+                "name": "SpecificChart",
+                "value": "Line",
+                "isOptional": true
+              },
+              {
+                "name": "PartTitle",
+                "value": "HTTP 5xx Error Rate",
+                "isOptional": true
+              },
+              {
+                "name": "PartSubTitle",
+                "value": "5xx errors per 5 minutes",
+                "isOptional": true
+              }
+            ],
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "settings": {}
+          }
+        },
+        "2": {
+          "position": {
+            "x": 0,
+            "y": 4,
+            "colSpan": 6,
+            "rowSpan": 4
+          },
+          "metadata": {
+            "inputs": [
+              {
+                "name": "resourceTypeMode",
+                "isOptional": true
+              },
+              {
+                "name": "ComponentId",
+                "isOptional": true
+              },
+              {
+                "name": "Scope",
+                "value": {
+                  "resourceIds": [
+                    "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/containerApps/{container-app-name}"
+                  ]
+                },
+                "isOptional": true
+              },
+              {
+                "name": "PartId",
+                "value": "3f9c0d6g-9d1h-6e5c-0g4f-1h3c4d5e6f7g",
+                "isOptional": true
+              },
+              {
+                "name": "Version",
+                "value": "2.0",
+                "isOptional": true
+              },
+              {
+                "name": "TimeRange",
+                "value": "P1D",
+                "isOptional": true
+              },
+              {
+                "name": "DashboardId",
+                "isOptional": true
+              },
+              {
+                "name": "DraftRequestParameters",
+                "isOptional": true
+              },
+              {
+                "name": "Query",
+                "value": "requests\n| where timestamp > ago(1h)\n| summarize P95Latency = percentile(duration, 95) by bin(timestamp, 5m)\n| render timechart",
+                "isOptional": true
+              },
+              {
+                "name": "ControlType",
+                "value": "FrameControlChart",
+                "isOptional": true
+              },
+              {
+                "name": "SpecificChart",
+                "value": "Line",
+                "isOptional": true
+              },
+              {
+                "name": "PartTitle",
+                "value": "P95 Response Time",
+                "isOptional": true
+              },
+              {
+                "name": "PartSubTitle",
+                "value": "95th percentile latency in milliseconds",
+                "isOptional": true
+              }
+            ],
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "settings": {}
+          }
+        },
+        "3": {
+          "position": {
+            "x": 6,
+            "y": 4,
+            "colSpan": 6,
+            "rowSpan": 4
+          },
+          "metadata": {
+            "inputs": [
+              {
+                "name": "resourceTypeMode",
+                "isOptional": true
+              },
+              {
+                "name": "ComponentId",
+                "isOptional": true
+              },
+              {
+                "name": "Scope",
+                "value": {
+                  "resourceIds": [
+                    "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/containerApps/{container-app-name}"
+                  ]
+                },
+                "isOptional": true
+              },
+              {
+                "name": "PartId",
+                "value": "4g0d1e7h-0e2i-7f6d-1h5g-2i4d5e6f7g8h",
+                "isOptional": true
+              },
+              {
+                "name": "Version",
+                "value": "2.0",
+                "isOptional": true
+              },
+              {
+                "name": "TimeRange",
+                "value": "P1D",
+                "isOptional": true
+              },
+              {
+                "name": "DashboardId",
+                "isOptional": true
+              },
+              {
+                "name": "DraftRequestParameters",
+                "isOptional": true
+              },
+              {
+                "name": "Query",
+                "value": "performanceCounters\n| where timestamp > ago(1h)\n| where category == \"Processor\" and counter == \"% Processor Time\"\n| summarize AvgCPU = avg(value) by bin(timestamp, 5m)\n| render timechart",
+                "isOptional": true
+              },
+              {
+                "name": "ControlType",
+                "value": "FrameControlChart",
+                "isOptional": true
+              },
+              {
+                "name": "SpecificChart",
+                "value": "Line",
+                "isOptional": true
+              },
+              {
+                "name": "PartTitle",
+                "value": "CPU Usage",
+                "isOptional": true
+              },
+              {
+                "name": "PartSubTitle",
+                "value": "Average CPU percentage",
+                "isOptional": true
+              }
+            ],
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "settings": {}
+          }
+        },
+        "4": {
+          "position": {
+            "x": 0,
+            "y": 8,
+            "colSpan": 6,
+            "rowSpan": 4
+          },
+          "metadata": {
+            "inputs": [
+              {
+                "name": "resourceTypeMode",
+                "isOptional": true
+              },
+              {
+                "name": "ComponentId",
+                "isOptional": true
+              },
+              {
+                "name": "Scope",
+                "value": {
+                  "resourceIds": [
+                    "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/containerApps/{container-app-name}"
+                  ]
+                },
+                "isOptional": true
+              },
+              {
+                "name": "PartId",
+                "value": "5h1e2f8i-1f3j-8g7e-2i6h-3j5e6f7g8h9i",
+                "isOptional": true
+              },
+              {
+                "name": "Version",
+                "value": "2.0",
+                "isOptional": true
+              },
+              {
+                "name": "TimeRange",
+                "value": "P1D",
+                "isOptional": true
+              },
+              {
+                "name": "DashboardId",
+                "isOptional": true
+              },
+              {
+                "name": "DraftRequestParameters",
+                "isOptional": true
+              },
+              {
+                "name": "Query",
+                "value": "ContainerAppSystemLogs_CL\n| where ContainerAppName_s == \"{container-app-name}\"\n| where Log_s contains \"replica\"\n| summarize ReplicaCount = dcount(ReplicaName_s) by bin(TimeGenerated, 5m)\n| render timechart",
+                "isOptional": true
+              },
+              {
+                "name": "ControlType",
+                "value": "FrameControlChart",
+                "isOptional": true
+              },
+              {
+                "name": "SpecificChart",
+                "value": "Line",
+                "isOptional": true
+              },
+              {
+                "name": "PartTitle",
+                "value": "Replica Count",
+                "isOptional": true
+              },
+              {
+                "name": "PartSubTitle",
+                "value": "Number of active replicas",
+                "isOptional": true
+              }
+            ],
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "settings": {}
+          }
+        },
+        "5": {
+          "position": {
+            "x": 6,
+            "y": 8,
+            "colSpan": 6,
+            "rowSpan": 4
+          },
+          "metadata": {
+            "inputs": [
+              {
+                "name": "resourceTypeMode",
+                "isOptional": true
+              },
+              {
+                "name": "ComponentId",
+                "isOptional": true
+              },
+              {
+                "name": "Scope",
+                "value": {
+                  "resourceIds": [
+                    "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Insights/components/{application-insights-name}"
+                  ]
+                },
+                "isOptional": true
+              },
+              {
+                "name": "PartId",
+                "value": "6i2f3g9j-2g4k-9h8f-3j7i-4k6f7g8h9i0j",
+                "isOptional": true
+              },
+              {
+                "name": "Version",
+                "value": "2.0",
+                "isOptional": true
+              },
+              {
+                "name": "TimeRange",
+                "value": "P1D",
+                "isOptional": true
+              },
+              {
+                "name": "DashboardId",
+                "isOptional": true
+              },
+              {
+                "name": "DraftRequestParameters",
+                "isOptional": true
+              },
+              {
+                "name": "Query",
+                "value": "alerts\n| where timestamp > ago(24h)\n| where alertState == \"Fired\"\n| summarize OpenAlerts = count() by bin(timestamp, 1h)\n| render timechart",
+                "isOptional": true
+              },
+              {
+                "name": "ControlType",
+                "value": "FrameControlChart",
+                "isOptional": true
+              },
+              {
+                "name": "SpecificChart",
+                "value": "Column",
+                "isOptional": true
+              },
+              {
+                "name": "PartTitle",
+                "value": "Open Alerts",
+                "isOptional": true
+              },
+              {
+                "name": "PartSubTitle",
+                "value": "Number of fired alerts per hour",
+                "isOptional": true
+              }
+            ],
+            "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+            "settings": {}
+          }
+        }
+      }
+    }
+  },
+  "metadata": {
+    "model": {
+      "timeRange": {
+        "value": {
+          "relative": {
+            "duration": 24,
+            "timeUnit": 1
+          }
+        },
+        "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"
+      },
+      "filterLocale": {
+        "value": "en-us"
+      },
+      "filters": {
+        "value": {
+          "MsPortalFx_TimeRange": {
+            "model": {
+              "format": "utc",
+              "granularity": "auto",
+              "relative": "24h"
+            },
+            "displayCache": {
+              "name": "UTC Time",
+              "value": "Past 24 hours"
+            },
+            "filteredPartIds": [
+              "StartboardPart-MonitorChartPart-1d7a8c4e-7b9f-4c3a-8e2d-9f1a2b3c4d5e",
+              "StartboardPart-MonitorChartPart-2e8b9c5f-8c0g-5d4b-9f3e-0g2b3c4d5e6f",
+              "StartboardPart-MonitorChartPart-3f9c0d6g-9d1h-6e5c-0g4f-1h3c4d5e6f7g",
+              "StartboardPart-MonitorChartPart-4g0d1e7h-0e2i-7f6d-1h5g-2i4d5e6f7g8h",
+              "StartboardPart-MonitorChartPart-5h1e2f8i-1f3j-8g7e-2i6h-3j5e6f7g8h9i",
+              "StartboardPart-MonitorChartPart-6i2f3g9j-2g4k-9h8f-3j7i-4k6f7g8h9i0j"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
