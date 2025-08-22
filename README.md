@@ -4,7 +4,7 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 
 ## Getting Started
 
-**New to this project?** Start with the [Quick Start Guide](QUICK_START.md) to get running in 15 minutes.
+** New to this project?** Start with **[GETTING_STARTED.md](GETTING_STARTED.md)** - complete setup in 10 minutes.
 
 **Need detailed information?** Continue reading this comprehensive documentation.
 
@@ -13,6 +13,7 @@ A comprehensive, production-ready Azure Container Apps platform built with Terra
 This project implements an enterprise-grade Azure Container Apps platform with comprehensive DevOps pipelines, change management controls, and shared resource architecture. The solution demonstrates production-ready practices including multi-environment deployment (dev/staging/prod), automated quality gates, manual approvals, and complete audit trails.
 
 **Key Components:**
+
 - **Shared Resources**: Container Registry, Log Analytics, Application Insights for cost efficiency
 - **Environment-Specific**: Key Vault, Container Apps Environment, Resource Groups for isolation
 - **Enterprise Pipeline**: GitHub → Azure DevOps → Terraform → Azure with quality gates and approvals
@@ -151,7 +152,7 @@ az ad sp create-for-rbac --name "terraform-sp" --role="Contributor" --scopes="/s
 1. Go to **Project Settings** → **Service connections**
 2. Create Azure Resource Manager connections:
    - `azure-dev-connection`: Development subscription
-   - `azure-staging-connection`: Staging subscription  
+   - `azure-staging-connection`: Staging subscription
    - `azure-prod-connection`: Production subscription
    - `acr-connection`: Container Registry connection
 
@@ -210,7 +211,7 @@ cp terraform.tfvars.example terraform.tfvars
    - Source: `/.azure-pipelines/infrastructure-pipeline.yml`
    - Triggers: Changes to `/infra/**`
 2. Create **Application Pipeline**:
-   - Source: `/.azure-pipelines/application-pipeline.yml`  
+   - Source: `/.azure-pipelines/application-pipeline.yml`
    - Triggers: Changes to `/src/**`
 3. Configure environment approvals and branch policies
 

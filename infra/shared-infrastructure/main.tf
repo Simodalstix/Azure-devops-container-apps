@@ -7,10 +7,10 @@ terraform {
       version = "~> 3.0"
     }
   }
-  backend "azurerm" {
-    # Backend configuration provided by pipeline
-    key = "shared.terraform.tfstate"
-  }
+  # backend "azurerm" {
+  #   # Backend configuration provided by pipeline
+  #   key = "shared.terraform.tfstate"
+  # }
 }
 
 provider "azurerm" {
