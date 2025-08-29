@@ -1,0 +1,74 @@
+# Validation Pipeline - Terraform validation for green badge
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+  paths:
+    include:
+    - infra/**
+    - .azure-pipelines/**
+
+pr:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - infra/**
+
+variables:
+- name: terraformVersion
+  value: '1.6.6'
+
+stages:
+- stage: Validate
+  displayName: 'Terraform Validation'
+  jobs:
+  - job: TerraformValidate
+    displayName: 'Validate Infrastructure Code'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Bash@3
+      displayName: 'Install Terraform'
+      inputs:
+        targetType: 'inline'
+        script: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install terraform
+          terraform --version
+
+    - task: Bash@3
+      displayName: 'Terraform Format Check'
+      inputs:
+        targetType: 'inline'
+        script: |
+          terraform fmt -check -recursive
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra'
+
+    - task: Bash@3
+      displayName: 'Terraform Init (no backend)'
+      inputs:
+        targetType: 'inline'
+        script: |
+          terraform init -backend=false
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/envs/dev'
+
+    - task: Bash@3
+      displayName: 'Terraform Validate'
+      inputs:
+        targetType: 'inline'
+        script: |
+          terraform validate
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/envs/dev'
+
+    - task: Bash@3
+      displayName: 'Security Scan with Checkov'
+      inputs:
+        targetType: 'inline'
+        script: |
+          pip install checkov
+          checkov -d infra/ --framework terraform --output cli --quiet
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
