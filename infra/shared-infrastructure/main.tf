@@ -20,7 +20,7 @@ provider "azurerm" {
 # Local values for shared resources
 locals {
   location = "australiaeast"
-  
+
   tags = {
     Environment = "shared"
     Project     = "container-apps-devops"

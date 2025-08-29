@@ -51,8 +51,8 @@ module "shared" {
 
   # References to shared resources
   shared_resource_group_name       = "rg-containerapp-shared-aue"
-  shared_acr_name                 = "acrcontainerappdevops001"
-  shared_log_analytics_name       = "law-containerapp-shared-aue"
+  shared_acr_name                  = "acrcontainerappdevops001"
+  shared_log_analytics_name        = "law-containerapp-shared-aue"
   shared_application_insights_name = "ai-containerapp-shared-aue"
 
   tags = local.common_tags

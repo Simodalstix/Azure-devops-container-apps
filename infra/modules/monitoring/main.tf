@@ -31,7 +31,7 @@ resource "azurerm_monitor_metric_alert" "cpu_high" {
   description         = "Alert when CPU usage is greater than 70% for 10 minutes"
   severity            = 2
   frequency           = "PT1M"
-  window_size         = "PT10M"
+  window_size         = "PT15M"
 
   criteria {
     metric_namespace = "Microsoft.App/containerApps"
@@ -111,7 +111,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "application_errors" {
   location            = var.location
 
   evaluation_frequency = "PT5M"
-  window_duration      = "PT10M"
+  window_duration      = "PT15M"
   scopes               = [var.log_analytics_workspace_id]
   severity             = 2
 

@@ -20,15 +20,15 @@ provider "azurerm" {
 locals {
   environment = "staging"
   location    = "australiaeast"
-  
+
   # Staging uses production-like settings but smaller scale
   container_app_config = {
-    min_replicas = 1
-    max_replicas = 5
-    cpu_requests = "0.25"
+    min_replicas    = 1
+    max_replicas    = 5
+    cpu_requests    = "0.25"
     memory_requests = "0.5Gi"
   }
-  
+
   tags = {
     Environment = local.environment
     Project     = "container-apps-devops"
@@ -39,7 +39,7 @@ locals {
 # Environment-specific infrastructure module (references shared resources)
 module "shared" {
   source = "../../modules/shared"
-  
+
   # Environment-specific resources
   resource_group_name            = "rg-containerapp-${local.environment}-aue"
   location                       = local.location
@@ -49,8 +49,8 @@ module "shared" {
 
   # References to shared resources
   shared_resource_group_name       = "rg-containerapp-shared-aue"
-  shared_acr_name                 = "acrcontainerappdevops001"
-  shared_log_analytics_name       = "law-containerapp-shared-aue"
+  shared_acr_name                  = "acrcontainerappdevops001"
+  shared_log_analytics_name        = "law-containerapp-shared-aue"
   shared_application_insights_name = "ai-containerapp-shared-aue"
 
   tags = local.tags
@@ -59,7 +59,7 @@ module "shared" {
 # Container app module
 module "container_app" {
   source = "../../modules/container-app"
-  
+
   container_app_name                     = "ca-api-${local.environment}-aue"
   container_app_environment_id           = module.shared.container_app_environment_id
   resource_group_name                    = module.shared.resource_group_name
