@@ -1,4 +1,4 @@
-# Terraform Deploy Template - Single Responsibility: Deploy infrastructure to specific environment
+# Terraform Deploy Template - Built-in bash commands
 parameters:
 - name: environment
   type: string
@@ -8,37 +8,24 @@ parameters:
 steps:
 - checkout: self
 
-- task: TerraformInstaller@1
+- task: Bash@3
   displayName: 'Install Terraform'
   inputs:
-    terraformVersion: $(terraformVersion)
+    targetType: 'inline'
+    script: |
+      wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+      sudo apt update && sudo apt install terraform
+      terraform --version
 
-- task: TerraformTaskV4@4
-  displayName: 'Terraform Init'
+- task: AzureCLI@2
+  displayName: 'Terraform Init, Plan & Apply'
   inputs:
-    provider: 'azurerm'
-    command: 'init'
+    azureSubscription: '${{ parameters.serviceConnection }}'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
     workingDirectory: '$(System.DefaultWorkingDirectory)/infra/envs/${{ parameters.environment }}'
-    backendServiceArm: '${{ parameters.serviceConnection }}'
-    backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
-    backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
-    backendAzureRmContainerName: '$(tfStateContainer)'
-    backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
-
-- task: TerraformTaskV4@4
-  displayName: 'Terraform Plan'
-  inputs:
-    provider: 'azurerm'
-    command: 'plan'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/infra/envs/${{ parameters.environment }}'
-    environmentServiceNameAzureRM: '${{ parameters.serviceConnection }}'
-    commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
-
-- task: TerraformTaskV4@4
-  displayName: 'Terraform Apply'
-  inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/infra/envs/${{ parameters.environment }}'
-    environmentServiceNameAzureRM: '${{ parameters.serviceConnection }}'
-    commandOptions: 'tfplan'
+    inlineScript: |
+      terraform init
+      terraform plan -var-file="terraform.tfvars" -out=tfplan
+      terraform apply tfplan

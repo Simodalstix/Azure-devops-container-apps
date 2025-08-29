@@ -12,9 +12,9 @@ Production-ready Azure Container Apps platform with Terraform IaC and enterprise
 
 ## Architecture
 
-![Azure Container Apps Architecture](diagrams/azure-devops-containers-diagram.png)
+![Azure Container Apps Architecture](diagrams/azure-devops-containers-diagram.svg)
 
-*Architecture diagram created using Azure official icons and Excalidraw*
+_Architecture diagram created using Azure official icons and Excalidraw_
 
 ## Infrastructure Provisioned
 
