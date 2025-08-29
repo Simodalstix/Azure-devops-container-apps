@@ -20,6 +20,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Debug - List directory structure
+      run: |
+        pwd
+        ls -la
+        ls -la infra/ || echo "infra directory not found"
+        
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
@@ -27,17 +33,17 @@ jobs:
         
     - name: Terraform Format Check
       run: terraform fmt -check -recursive
-      working-directory: ./infra
+      working-directory: infra
       
     - name: Terraform Init (no backend)
       run: terraform init -backend=false
-      working-directory: ./infra/envs/dev
+      working-directory: infra/envs/dev
       
     - name: Terraform Validate
       run: terraform validate
-      working-directory: ./infra/envs/dev
+      working-directory: infra/envs/dev
       
     - name: Security Scan with Checkov
       run: |
         pip install checkov
-        checkov -d ./infra/ --framework terraform --output cli --quiet
+        checkov -d infra/ --framework terraform --output cli --quiet
