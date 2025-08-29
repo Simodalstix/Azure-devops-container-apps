@@ -1,0 +1,20 @@
+# Example Terraform variables for development environment
+# Copy this file to terraform.tfvars and update the values
+
+# Admin email for alerts and notifications
+admin_email = "admin@yourcompany.com"
+
+# Container configuration
+container_image = "your-acr-name.azurecr.io/your-app:latest"
+min_replicas    = 1
+max_replicas    = 3
+cpu_cores       = 0.25
+memory_size     = "0.5Gi"
+
+# Database connection string (if using a database)
+# database_connection_string = "Server=your-db-server;Database=your-db;User Id=your-user;Password=your-password;"
+
+# Monitoring thresholds
+http_5xx_threshold  = 5
+restart_threshold   = 3
+error_log_threshold = 10

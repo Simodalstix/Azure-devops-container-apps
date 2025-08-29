@@ -229,7 +229,6 @@ service-account.json
 # Local development files
 .local/
 local/
-dev/
 
 # Terraform provider cache
 .terraform.d/
