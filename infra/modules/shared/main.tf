@@ -28,13 +28,6 @@ resource "azurerm_storage_account" "tfstate" {
 
   blob_properties {
     versioning_enabled = true
-
-    logging {
-      read    = true
-      write   = true
-      delete  = true
-      version = "2.0"
-    }
   }
 
   tags = var.tags
