@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/your-org/your-project/_apis/build/status/infrastructure-pipeline?branchName=main)](https://dev.azure.com/your-org/your-project/_build/latest?definitionId=1&branchName=main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Release](https://img.shields.io/badge/Release-v0.1.0-blue.svg)](https://github.com/your-username/Azure-container-apps-devops/releases/tag/v0.1.0)
+[![Release](https://img.shields.io/github/v/release/Simodalstix/Azure-devops-container-apps?include_prereleases)](https://github.com/Simodalstix/Azure-devops-container-apps/releases)
 [![Terraform](https://img.shields.io/badge/Terraform-1.6.0+-623CE4.svg)](https://www.terraform.io/)
 [![Azure CLI](https://img.shields.io/badge/Azure%20CLI-2.50+-0078D4.svg)](https://docs.microsoft.com/en-us/cli/azure/)
 
@@ -10,20 +10,29 @@ Production-ready Azure Container Apps platform with Terraform IaC and enterprise
 
 **Quick Start:** [GETTING_STARTED.md](GETTING_STARTED.md) - Deploy in 10 minutes
 
+## Architecture
+
+![Azure Container Apps Architecture](diagrams/azure-devops-containers-diagram.png)
+
+*Architecture diagram created using Azure official icons and Excalidraw*
+
 ## Infrastructure Provisioned
 
 **Shared Resources** (cost-optimized):
+
 - Azure Container Registry
-- Log Analytics Workspace  
+- Log Analytics Workspace
 - Application Insights
 
 **Per Environment** (dev/staging/prod):
+
 - Container Apps Environment
 - Key Vault
 - Resource Groups
 - Monitoring & Alerts
 
 **Sample Application**:
+
 - Node.js API with health checks
 - Auto-scaling container app
 - Application Insights integration
@@ -84,6 +93,7 @@ monitoring/           # Dashboards and queries
 ## Deployment Considerations
 
 **Remote State**: Configure Azure Storage backend for Terraform state
+
 ```bash
 # Create storage for Terraform state
 az group create --name "rg-terraform-state" --location "australiaeast"
@@ -91,6 +101,7 @@ az storage account create --name "sttfstatedevops001" --resource-group "rg-terra
 ```
 
 **Credentials**: Set environment variables for Terraform authentication
+
 ```bash
 export ARM_CLIENT_ID="your-service-principal-id"
 export ARM_CLIENT_SECRET="your-service-principal-secret"
@@ -107,12 +118,14 @@ export ARM_SUBSCRIPTION_ID="your-subscription-id"
 ## CI/CD Pipeline
 
 **Infrastructure Pipeline** (`infrastructure-pipeline.yml`):
+
 - Terraform format check, validate, init, plan
 - Security scanning with Checkov
 - Multi-environment deployment (dev → staging → prod)
 - Manual approvals for production
 
 **Application Pipeline** (`application-pipeline.yml`):
+
 - Container build and push to ACR
 - Deploy to Container Apps
 - Integration testing

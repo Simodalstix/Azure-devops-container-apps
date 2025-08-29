@@ -38,18 +38,22 @@ locals {
   }
 }
 
-# Shared infrastructure module
+# Environment-specific infrastructure module (references shared resources)
 module "shared" {
   source = "../../modules/shared"
 
+  # Environment-specific resources
   resource_group_name            = "rg-${local.project}-${local.environment}-${local.location_short}"
   location                       = local.location
   tfstate_storage_account_name   = "st${local.project}tfstate${local.environment}${local.location_short}"
-  acr_name                       = "acr${local.project}${local.environment}${local.location_short}"
   key_vault_name                 = "kv-${local.project}-${local.environment}-${local.location_short}"
-  log_analytics_workspace_name   = "law-${local.project}-${local.environment}-${local.location_short}"
-  application_insights_name      = "ai-${local.project}-${local.environment}-${local.location_short}"
   container_app_environment_name = "cae-${local.project}-${local.environment}-${local.location_short}"
+
+  # References to shared resources
+  shared_resource_group_name       = "rg-containerapp-shared-aue"
+  shared_acr_name                 = "acrcontainerappdevops001"
+  shared_log_analytics_name       = "law-containerapp-shared-aue"
+  shared_application_insights_name = "ai-containerapp-shared-aue"
 
   tags = local.common_tags
 }
@@ -71,7 +75,7 @@ module "container_app" {
   database_connection_string             = var.database_connection_string
   application_insights_connection_string = module.shared.application_insights_connection_string
   key_vault_id                           = module.shared.key_vault_uri
-  application_insights_id                = module.shared.application_insights_name
+  application_insights_id                = module.shared.application_insights_id
 
   tags = local.common_tags
 
