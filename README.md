@@ -1,6 +1,6 @@
 # Azure Container Apps with Terraform + Azure DevOps
 
-[![Build Status](https://dev.azure.com/your-org/your-project/_apis/build/status/infrastructure-pipeline?branchName=main)](https://dev.azure.com/your-org/your-project/_build/latest?definitionId=1&branchName=main)
+[![Terraform Validation](https://github.com/Simodalstix/Azure-devops-container-apps/workflows/Terraform%20Validation/badge.svg)](https://github.com/Simodalstix/Azure-devops-container-apps/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Release](https://img.shields.io/github/v/release/Simodalstix/Azure-devops-container-apps?include_prereleases)](https://github.com/Simodalstix/Azure-devops-container-apps/releases)
 [![Terraform](https://img.shields.io/badge/Terraform-1.6.0+-623CE4.svg)](https://www.terraform.io/)
