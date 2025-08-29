@@ -1,10 +1,10 @@
 # Staging Environment - Production-like configuration for final validation
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.6.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = "~> 3.80"
     }
   }
   backend "azurerm" {
