@@ -32,16 +32,19 @@ jobs:
         terraform_version: 1.6.6
         
     - name: Terraform Format Check
-      run: terraform fmt -check -recursive
-      working-directory: infra
+      run: |
+        cd infra
+        terraform fmt -check -recursive
       
     - name: Terraform Init (no backend)
-      run: terraform init -backend=false
-      working-directory: infra/envs/dev
+      run: |
+        cd infra/envs/dev
+        terraform init -backend=false
       
     - name: Terraform Validate
-      run: terraform validate
-      working-directory: infra/envs/dev
+      run: |
+        cd infra/envs/dev
+        terraform validate
       
     - name: Security Scan with Checkov
       run: |
