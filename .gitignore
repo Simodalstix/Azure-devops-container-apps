@@ -256,6 +256,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+checkov-env/
 
 # Ruby (if using Ruby tools)
 *.gem

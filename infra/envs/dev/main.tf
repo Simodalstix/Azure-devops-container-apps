@@ -105,26 +105,32 @@ module "monitoring" {
 
 # Store ACR credentials in Key Vault
 resource "azurerm_key_vault_secret" "acr_username" {
-  name         = "acr-username"
-  value        = module.shared.container_registry_admin_username
-  key_vault_id = module.shared.key_vault_uri
+  name            = "acr-username"
+  value           = module.shared.container_registry_admin_username
+  key_vault_id    = module.shared.key_vault_uri
+  content_type    = "text/plain"
+  expiration_date = "2026-12-31T00:00:00Z"
 
   depends_on = [module.shared]
 }
 
 resource "azurerm_key_vault_secret" "acr_password" {
-  name         = "acr-password"
-  value        = module.shared.container_registry_admin_password
-  key_vault_id = module.shared.key_vault_uri
+  name            = "acr-password"
+  value           = module.shared.container_registry_admin_password
+  key_vault_id    = module.shared.key_vault_uri
+  content_type    = "text/plain"
+  expiration_date = "2026-12-31T00:00:00Z"
 
   depends_on = [module.shared]
 }
 
 # Store Application Insights connection string in Key Vault
 resource "azurerm_key_vault_secret" "app_insights_connection_string" {
-  name         = "app-insights-connection-string"
-  value        = module.shared.application_insights_connection_string
-  key_vault_id = module.shared.key_vault_uri
+  name            = "app-insights-connection-string"
+  value           = module.shared.application_insights_connection_string
+  key_vault_id    = module.shared.key_vault_uri
+  content_type    = "text/plain"
+  expiration_date = "2026-12-31T00:00:00Z"
 
   depends_on = [module.shared]
 }
