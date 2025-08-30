@@ -8,13 +8,19 @@
 
 Production-ready Azure Container Apps platform with Terraform IaC and enterprise DevOps pipelines. Demonstrates multi-environment deployment, monitoring, security, and compliance best practices.
 
-**Quick Start:** [GETTING_STARTED.md](GETTING_STARTED.md) - Deploy in 10 minutes
-
 ## Architecture
 
 ![Azure Container Apps Architecture](diagrams/azure-devops-containers-diagram.svg)
 
 _Architecture diagram created using Azure official icons and Excalidraw_
+
+## Quick Start
+
+**Infrastructure validation** (no deployment): The GitHub Actions workflow validates Terraform code automatically.
+
+**Full deployment**: Requires Azure DevOps setup - see [Azure DevOps Configuration](#azure-devops-configuration) below.
+
+**Local testing**: [GETTING_STARTED.md](GETTING_STARTED.md) - Deploy in 10 minutes
 
 ## Infrastructure Provisioned
 
@@ -114,6 +120,17 @@ export ARM_SUBSCRIPTION_ID="your-subscription-id"
 **Regions**: Default is Australia East, configurable in variables
 
 **Policies**: Ensure subscription allows Container Apps and Key Vault creation
+
+## Azure DevOps Configuration
+
+**Current Status**: Repository includes Azure DevOps pipeline definitions but requires setup:
+
+1. **Azure DevOps Organization** - Create free organization
+2. **Service Connections** - Configure Azure Resource Manager connections
+3. **Variable Groups** - Set up terraform-backend variables
+4. **Environments** - Create dev/staging/prod with approvals
+
+**GitHub Actions**: Currently validates Terraform code automatically (no Azure DevOps required).
 
 ## CI/CD Pipeline
 
